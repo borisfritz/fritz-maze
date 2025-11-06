@@ -10,42 +10,40 @@ class State(Enum):
     PLAYING = "playing"
     WON = "won"
     LOST = "lost"
+class Game:
+    def __init__(self):
+        pygame.init()
+        pygame.display.set_caption("Fritz Maze")
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
 
-pygame.init()
+    def run(self):
+        maze = MazeGenerator(GRID_SIZE, CELL_SIZE)
+        game_state = State.GENERATING
+        maze.start_generation()
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Fritz Maze")
-clock = pygame.time.Clock()
+        # Game loop
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-def main():
-    maze = MazeGenerator(GRID_SIZE, CELL_SIZE)
+            match game_state:
+                case State.GENERATING:
+                    for _ in range(GENERATION_SPEED):
+                        maze.generation_step()
+                    if maze.generation_complete:
+                        game_state = State.PLAYING
+                case State.PLAYING:
+                    if maze.current.is_end:
+                        game_state = State.WON
 
-    game_state = State.GENERATING
-    maze.start_generation()
+            self.screen.fill(BLACK)
+            maze.draw(self.screen)
+            pygame.display.flip()
+            self.clock.tick(FPS)
+        pygame.quit()
+        sys.exit()
 
-    # Game loop
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        match game_state:
-            case State.GENERATING:
-                for _ in range(GENERATION_SPEED):
-                    maze.generation_step()
-                if maze.generation_complete:
-                    game_state = State.PLAYING
-            case State.PLAYING:
-                if maze.current.is_end:
-                    game_state = State.WON
-
-        screen.fill(BLACK)
-        maze.draw(screen)
-        pygame.display.flip()
-        clock.tick(FPS)
-    pygame.quit()
-    sys.exit()
-
-if __name__ == "__main__":
-    main()
+Game().run()

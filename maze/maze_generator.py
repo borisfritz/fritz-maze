@@ -1,6 +1,6 @@
 import random
 
-from constants import CURRENT_COLOR
+from constants import CURRENT_COLOR, START_COLOR, END_COLOR
 from maze.cell import Cell
 
 class MazeGenerator:
@@ -9,6 +9,8 @@ class MazeGenerator:
         self.grid = [[Cell(x, y, cell_size) for y in range(self.grid_size)] for x in range(self.grid_size)]
         self.stack = []
         self.current = None
+        self.start_cell = False
+        self.end_cell = False
         self.generating = False
         self.generation_complete = False
 
@@ -56,26 +58,29 @@ class MazeGenerator:
             else:
                 self.stack.pop()
         else:
-            start_set = False
-            while not start_set:
-                a = random.randint(1, self.grid_size - 1)
-                if not self.grid[1][a].is_wall:
-                    start = self.grid[0][a]
-                    start.is_wall = False
-                    start.visited = True
-                    start.is_start = True
-                    start_set = True
-            end_set = False
-            while not end_set:
-                b = random.randint(1, self.grid_size - 1)
-                if not self.grid[self.grid_size - 2][b].is_wall:
-                    end = self.grid[self.grid_size - 1][b]
-                    end.is_wall = False
-                    end.visited = True
-                    end.is_end = True
-                    end_set = True
+            self.generate_start_finish_cells()
             self.generating = False
             self.generation_complete = True
+
+    def generate_start_finish_cells(self):
+        start_set = False
+        while not start_set:
+            a = random.randint(1, self.grid_size - 1)
+            if not self.grid[1][a].is_wall:
+                start = self.grid[0][a]
+                start.is_wall = False
+                start.visited = True
+                self.start_cell = start
+                start_set = True
+        end_set = False
+        while not end_set:
+            b = random.randint(1, self.grid_size - 1)
+            if not self.grid[self.grid_size - 2][b].is_wall:
+                end = self.grid[self.grid_size - 1][b]
+                end.is_wall = False
+                end.visited = True
+                self.end_cell = end
+                end_set = True
 
     def draw(self, screen):
         for row in self.grid:
@@ -84,3 +89,7 @@ class MazeGenerator:
 
         if self.generating and self.current:
             self.current.draw(screen, CURRENT_COLOR)
+        if self.start_cell:
+            self.start_cell.draw(screen, START_COLOR)
+        if self.end_cell:
+            self.end_cell.draw(screen, END_COLOR)
