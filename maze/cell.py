@@ -9,8 +9,9 @@ class Cell:
         self.size = CELL_SIZE
         self.visited = False
         self.is_wall = True
-        self.start = False
-        self.end = False
+        ###
+        self.is_start = False
+        self.is_end = False
 
     def draw(self, screen, color=None):
         if color is None:

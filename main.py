@@ -1,24 +1,25 @@
 import pygame
 import sys
 
+from enum import Enum
 from constants import *
-from maze.mazegenerator import MazeGenerator
+from maze.maze_generator import MazeGenerator
+
+class state(Enum):
+    GENERATING = 0
+    PLAYING = 1
+    WON = 2
 
 pygame.init()
 
-clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Fritz Maze")
+clock = pygame.time.Clock()
 
 def main():
     maze = MazeGenerator(GRID_SIZE)
 
-    # Game States
-    STATE_GENERATING = 0
-    STATE_PLAYING = 1
-    STATE_WON = 2
-
-    game_state = STATE_GENERATING
+    game_state = state.GENERATING
     maze.start_generation()
 
     # Game loop
@@ -28,11 +29,15 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        if game_state == STATE_GENERATING:
-            for _ in range(GENERATION_SPEED):
-                maze.generation_step()
-            if maze.generation_complete:
-                game_state = STATE_PLAYING
+        match game_state:
+            case state.GENERATING:
+                for _ in range(GENERATION_SPEED):
+                    maze.generation_step()
+                if maze.generation_complete:
+                    game_state = state.PLAYING
+            case state.PLAYING:
+                if maze.current.is_end:
+                    game_state = state.WON
 
         screen.fill(BLACK)
         maze.draw(screen)

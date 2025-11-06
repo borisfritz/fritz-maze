@@ -57,18 +57,22 @@ class MazeGenerator:
                 self.stack.pop()
         else:
             start_set = False
-            end_set = False
             while not start_set:
                 a = random.randint(1, self.grid_size - 1)
                 if not self.grid[1][a].is_wall:
-                    self.grid[0][a].is_wall = False
-                    self.grid[0][a].visited = True
+                    start = self.grid[0][a]
+                    start.is_wall = False
+                    start.visited = True
+                    start.is_start = True
                     start_set = True
+            end_set = False
             while not end_set:
                 b = random.randint(1, self.grid_size - 1)
                 if not self.grid[self.grid_size - 2][b].is_wall:
-                    self.grid[self.grid_size - 1][b].is_wall = False
-                    self.grid[self.grid_size - 1][b].visited = True
+                    end = self.grid[self.grid_size - 1][b]
+                    end.is_wall = False
+                    end.visited = True
+                    end.is_end = True
                     end_set = True
             self.generating = False
             self.generation_complete = True
