@@ -5,10 +5,11 @@ from enum import Enum
 from constants import *
 from maze.maze_generator import MazeGenerator
 
-class state(Enum):
-    GENERATING = 0
-    PLAYING = 1
-    WON = 2
+class State(Enum):
+    GENERATING = "generating"
+    PLAYING = "playing"
+    WON = "won"
+    LOST = "lost"
 
 pygame.init()
 
@@ -17,9 +18,9 @@ pygame.display.set_caption("Fritz Maze")
 clock = pygame.time.Clock()
 
 def main():
-    maze = MazeGenerator(GRID_SIZE)
+    maze = MazeGenerator(GRID_SIZE, CELL_SIZE)
 
-    game_state = state.GENERATING
+    game_state = State.GENERATING
     maze.start_generation()
 
     # Game loop
@@ -30,14 +31,14 @@ def main():
                 running = False
 
         match game_state:
-            case state.GENERATING:
+            case State.GENERATING:
                 for _ in range(GENERATION_SPEED):
                     maze.generation_step()
                 if maze.generation_complete:
-                    game_state = state.PLAYING
-            case state.PLAYING:
+                    game_state = State.PLAYING
+            case State.PLAYING:
                 if maze.current.is_end:
-                    game_state = state.WON
+                    game_state = State.WON
 
         screen.fill(BLACK)
         maze.draw(screen)

@@ -4,9 +4,9 @@ from constants import CURRENT_COLOR
 from maze.cell import Cell
 
 class MazeGenerator:
-    def __init__(self, grid_size):
+    def __init__(self, grid_size, cell_size):
         self.grid_size = grid_size
-        self.grid = [[Cell(x, y) for y in range(self.grid_size)] for x in range(self.grid_size)]
+        self.grid = [[Cell(x, y, cell_size) for y in range(self.grid_size)] for x in range(self.grid_size)]
         self.stack = []
         self.current = None
         self.generating = False
