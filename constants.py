@@ -1,8 +1,8 @@
 # Maze Settings
 GRID_SIZE = 51 #Must be and Odd number
-CELL_SIZE = 20
+CELL_SIZE = 15
 MARGIN = 200
-GENERATION_SPEED = 100
+GENERATION_SPEED = 2
 
 # Screen Settings
 SCREEN_WIDTH = GRID_SIZE * CELL_SIZE + MARGIN * 2

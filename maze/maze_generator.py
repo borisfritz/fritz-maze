@@ -5,19 +5,32 @@ from maze.cell import Cell
 
 class MazeGenerator:
     def __init__(self, grid_size, cell_size):
+        # Create the main maze grid
         self.grid_size = grid_size
-        self.grid = [[Cell(x, y, cell_size) for y in range(self.grid_size)] for x in range(self.grid_size)]
+        self.cell_size = cell_size
+        self.grid = [[Cell(x, y, self.cell_size) for y in range(self.grid_size)] for x in range(self.grid_size)]
+        # initialize maze generation variables
         self.stack = []
         self.current = None
-        self.start_cell = False
-        self.end_cell = False
         self.generating = False
         self.generation_complete = False
+        # initialize start and end cells
+        self.start_cell = False
+        self.end_cell = False
 
     def get_cell(self, x, y):
         if 0 <= x < self.grid_size and 0 <= y < self.grid_size:
             return self.grid[x][y]
         return None
+
+    def start_generation(self):
+        start_cell = self.grid[1][1]
+        start_cell.visited = True
+        start_cell.is_wall = False
+        self.current = start_cell
+        self.stack = [start_cell]
+        self.generating = True
+        self.generation_complete = False
 
     def get_unvisited_neighbors(self, cell):
         neighbors = []
@@ -28,15 +41,6 @@ class MazeGenerator:
             if neighbor and not neighbor.visited:
                 neighbors.append((neighbor, dx // 2, dy // 2))
         return neighbors
-
-    def start_generation(self):
-        start_cell = self.grid[1][1]
-        start_cell.visited = True
-        start_cell.is_wall = False
-        self.current = start_cell
-        self.stack = [start_cell]
-        self.generating = True
-        self.generation_complete = False
 
     def generation_step(self):
         if not self.generating or self.generation_complete:
@@ -86,7 +90,6 @@ class MazeGenerator:
         for row in self.grid:
             for cell in row:
                 cell.draw(screen)
-
         if self.generating and self.current:
             self.current.draw(screen, CURRENT_COLOR)
         if self.start_cell:
