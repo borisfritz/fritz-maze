@@ -1,8 +1,13 @@
 # Maze Settings
-GRID_SIZE = 51 #Must be and Odd number
-CELL_SIZE = 15
+GRID_SIZE = 31 #Must be and Odd number
+CELL_SIZE = 30
 MARGIN = 200
-GENERATION_SPEED = 2
+GENERATION_SPEED = 10
+
+# Player Settings
+PLAYER_SIZE = CELL_SIZE // 2 - 3
+PLAYER_SPEED = 5
+
 
 # Screen Settings
 SCREEN_WIDTH = GRID_SIZE * CELL_SIZE + MARGIN * 2
@@ -16,3 +21,4 @@ PATH_COLOR = (40, 40, 40)
 CURRENT_COLOR = (255, 100, 100)
 START_COLOR = (50, 100, 50)
 END_COLOR = (50, 50, 100)
+PLAYER_COLOR = (255, 0, 0)
