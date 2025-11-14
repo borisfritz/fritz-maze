@@ -1,19 +1,28 @@
 import pygame
 
-from constants import PLAYER_SIZE, PLAYER_SPEED, PLAYER_COLOR, MARGIN
-
+from constants import *
 
 class Player:
-    def __init__(self, start_cell):
-        self.x = MARGIN + start_cell.x * start_cell.size + start_cell.size // 2
-        self.y = start_cell.y * start_cell.size + start_cell.size // 2
+    def __init__(self, start_cell, grid_size, cell_size):
+        # Initialize player location and stats
+        self.margin_x, self.margin_y = calculate_margins(grid_size, cell_size)
+        self.x = self.margin_x + start_cell.x * start_cell.size + start_cell.size // 2
+        self.y = self.margin_y + start_cell.y * start_cell.size + start_cell.size // 2
         self.size = PLAYER_SIZE  # radius
         self.speed = PLAYER_SPEED
+        # checks to see when player starts moving to start the mode
+        self.start_x = self.x
+        self.start_y = self.y
+        self.has_started = False
+        # checks to see if player has won the game
+        self.won = False
 
     def draw(self, screen):
         pygame.draw.circle(screen, PLAYER_COLOR, (self.x, self.y), self.size)
 
     def update(self, grid):
+        if self.start_x != self.x or self.start_y != self.y:
+            self.has_started = True
         keys = pygame.key.get_pressed()
         dx = 0
         dy = 0
@@ -34,19 +43,19 @@ class Player:
             self.y = new_y
 
     def collides_with_walls(self, x, y, grid):
-        if x - self.size < MARGIN:
+        if x - self.size < self.margin_x:
             return True
-        if x + self.size > MARGIN + grid.grid_size * grid.cell_size:
+        if x + self.size > self.margin_x + grid.grid_size * grid.cell_size:
             return True
-        if y - self.size < 0:
+        if y - self.size < self.margin_y:
             return True
-        if y + self.size > grid.grid_size * grid.cell_size:
+        if y + self.size > self.margin_y + grid.grid_size * grid.cell_size:
             return True
 
-        min_col = int((x - self.size - MARGIN) / grid.cell_size)
-        max_col = int((x + self.size - MARGIN) / grid.cell_size)
-        min_row = int((y - self.size) / grid.cell_size)
-        max_row = int((y + self.size) / grid.cell_size)
+        min_col = int((x - self.size - self.margin_x) / grid.cell_size)
+        max_col = int((x + self.size - self.margin_x) / grid.cell_size)
+        min_row = int((y - self.size - self.margin_y) / grid.cell_size)
+        max_row = int((y + self.size - self.margin_y) / grid.cell_size)
 
         for row in range(min_row, max_row + 1):
             for col in range(min_col, max_col + 1):

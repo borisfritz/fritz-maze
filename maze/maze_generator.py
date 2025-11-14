@@ -1,6 +1,6 @@
 import random
 
-from constants import CURRENT_COLOR, START_COLOR, END_COLOR
+from constants import *
 from maze.cell import Cell
 
 class MazeGenerator:
@@ -8,7 +8,8 @@ class MazeGenerator:
         # Create the main maze grid
         self.grid_size = grid_size
         self.cell_size = cell_size
-        self.grid = [[Cell(x, y, self.cell_size) for y in range(self.grid_size)] for x in range(self.grid_size)]
+        self.margin_x, self.margin_y = calculate_margins(self.grid_size, self.cell_size)
+        self.grid = [[Cell(x, y, self.cell_size, margin_x=self.margin_x, margin_y=self.margin_y) for y in range(self.grid_size)] for x in range(self.grid_size)]
         # initialize maze generation variables
         self.stack = []
         self.current = None
