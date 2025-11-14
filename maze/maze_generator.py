@@ -85,6 +85,7 @@ class MazeGenerator:
                 end.is_wall = False
                 end.visited = True
                 self.end_cell = end
+                end.is_finish = True
                 end_set = True
 
     def draw(self, screen):

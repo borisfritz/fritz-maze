@@ -11,6 +11,7 @@ class Cell:
         self.margin_y = margin_y
         self.visited = False
         self.is_wall = True
+        self.is_finish = False
 
     def draw(self, screen, color=None):
         if color is None:

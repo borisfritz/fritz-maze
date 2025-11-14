@@ -9,7 +9,7 @@ class Timer:
 
     def stop_time(self):
         self.is_stopped = True
-        self.stop_time = (pygame.time.get_ticks() - self.start_time) / 1000
+        self.final_time = (pygame.time.get_ticks() - self.start_time) / 1000
 
     def draw(self, screen):
         if not self.is_stopped:
@@ -17,6 +17,6 @@ class Timer:
             timer_text = self.font.render(f"Time: {elapsed_time:.2f}", True, (255, 255, 255))
             screen.blit(timer_text, (20, 20))
         elif self.is_stopped:
-            timer_text = self.font.render(f"{self.final_time}", True, (255, 255, 255))
+            timer_text = self.font.render(f"Time: {self.final_time:.2f}", True, (255, 255, 255))
             screen.blit(timer_text, (20, 20))
 

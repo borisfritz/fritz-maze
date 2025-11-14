@@ -66,21 +66,19 @@ class Game:
                         elif player.has_started and timer is None:
                             timer = Timer(pygame.time.get_ticks())
                             print("Timer Started")
-                        else:
-                            timer.draw(self.screen)
                         if player.won:
                             timer.stop_time()
-                            timer.draw(self.screen)
                             game_state = GameState.FINISHED
-                case GameState.FINISHED:
-
                     if game_mode == GameMode.VERSES:
-                        #TODO: implement versus mode
                         pass
+                case GameState.FINISHED:
+                    pass
 
             maze.draw(self.screen)
             if player is not None:
                 player.draw(self.screen)
+            if timer is not None:
+                timer.draw(self.screen)
 
             pygame.display.flip()
             self.frame_rate = self.clock.tick(FPS)
@@ -91,7 +89,7 @@ def main():
     game = Game()
     game_screen = GameScreen.GAME
     game_mode = GameMode.TIME_TRIAL
-    game_difficulty = GameDifficulty.HARD
+    game_difficulty = GameDifficulty.EASY
     match game_screen:
         case GameScreen.GAME:
             game.play(game_mode, game_difficulty)

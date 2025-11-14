@@ -62,4 +62,6 @@ class Player:
                 cell = grid.get_cell(col, row)
                 if cell and cell.is_wall:
                     return True
+                if cell and cell.is_finish:
+                    self.won = True
         return False
