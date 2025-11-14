@@ -9,9 +9,6 @@ class Cell:
         self.size = cell_size
         self.visited = False
         self.is_wall = True
-        ###
-        self.is_start = False
-        self.is_end = False
 
     def draw(self, screen, color=None):
         if color is None:
@@ -24,4 +21,4 @@ class Cell:
             self.size
         )
         pygame.draw.rect(screen, color, rect)
-        pygame.draw.rect(screen, BLACK, rect, 1)
+        #pygame.draw.rect(screen, BLACK, rect, 1)

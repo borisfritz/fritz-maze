@@ -2,7 +2,7 @@
 GRID_SIZE = 31 #Must be and Odd number
 CELL_SIZE = 30
 MARGIN = 200
-GENERATION_SPEED = 10
+GENERATION_SPEED = 1
 
 # Player Settings
 PLAYER_SIZE = CELL_SIZE // 2 - 3

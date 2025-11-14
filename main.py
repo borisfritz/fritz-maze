@@ -51,7 +51,7 @@ class Game:
                     print("Spawned player")
                     game_state = GameState.PLAY_VERSES
                 case GameState.PLAY_VERSES:
-                    player.update()
+                    player.update(maze)
 
             # Draw world
             maze.draw(self.screen)
