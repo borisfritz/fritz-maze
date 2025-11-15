@@ -35,12 +35,14 @@ class Player:
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
             dy += self.speed
 
-        new_x = self.x + dx
-        new_y = self.y + dy
-
-        if not self.collides_with_walls(new_x, new_y, grid):
-            self.x = new_x
-            self.y = new_y
+        if dx != 0:
+            new_x = self.x + dx
+            if not self.collides_with_walls(new_x, self.y, grid):
+                self.x = new_x
+        if dy != 0:
+            new_y = self.y + dy
+            if not self.collides_with_walls(self.x, new_y, grid):
+                self.y = new_y
 
     def collides_with_walls(self, x, y, grid):
         if x - self.size < self.margin_x:
