@@ -43,16 +43,15 @@ class Game:
         # Game loop
         running = True
         while running:
+            pos = pygame.mouse.get_pos()
             action = None
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN and victory_screen:
-                    action = victory_screen.get_button_clicked(pygame.mouse.get_pos())
+                    action = victory_screen.get_button_clicked(pos)
 
             self.screen.fill(BLACK)
-
-            pos = pygame.mouse.get_pos()
 
             match game_state:
                 case GameState.GENERATE_MAZE:
@@ -89,7 +88,7 @@ class Game:
             if timer is not None:
                 timer.draw(self.screen, maze)
             if game_state == GameState.FINISHED:
-               victory_screen = draw_victory_screen(self.screen, self.font, pos)
+               victory_screen = draw_victory_screen(self.screen, self.font, timer, pos)
 
             if action:
                 match action:
