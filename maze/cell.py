@@ -15,7 +15,7 @@ class Cell:
 
     def draw(self, screen, color=None):
         if color is None:
-            color = WALL_COLOR if self.is_wall else PATH_COLOR
+            color = WHITE if self.is_wall else DARK_GRAY
 
         rect = pygame.Rect(
             self.margin_x + self.x * self.size,
@@ -24,4 +24,6 @@ class Cell:
             self.size
         )
         pygame.draw.rect(screen, color, rect)
-        #pygame.draw.rect(screen, BLACK, rect, 1)
+
+        # show grid
+        # pygame.draw.rect(screen, BLACK, rect, 1)

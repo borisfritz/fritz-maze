@@ -1,10 +1,14 @@
+from unittest import case
+
 import pygame
 import sys
 
 from constants import *
 from maze.maze_generator import MazeGenerator
 from player.player import Player
+from ui.game_text import draw_start_text
 from ui.timer import Timer
+from ui.victory_screen import draw_victory_screen
 
 class Game:
     def __init__(self):
@@ -30,6 +34,7 @@ class Game:
 
         player = None
         timer = None
+        victory_screen = None
 
         game_state = GameState.GENERATE_MAZE
         maze.start_generation()
@@ -38,11 +43,16 @@ class Game:
         # Game loop
         running = True
         while running:
+            action = None
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONDOWN and victory_screen:
+                    action = victory_screen.get_button_clicked(pygame.mouse.get_pos())
 
             self.screen.fill(BLACK)
+
+            pos = pygame.mouse.get_pos()
 
             match game_state:
                 case GameState.GENERATE_MAZE:
@@ -53,7 +63,7 @@ class Game:
                         game_state = GameState.SPAWN_PLAYER
 
                 case GameState.SPAWN_PLAYER:
-                    player = Player(maze.start_cell, maze.grid_size, maze.cell_size)
+                    player = Player(maze)
                     print("Player Spawned")
                     game_state = GameState.PLAYING
                     print("Time Trial Mode Started")
@@ -62,23 +72,36 @@ class Game:
                     if game_mode == GameMode.TIME_TRIAL:
                         player.update(maze)
                         if not player.has_started and timer is None:
-                            pass
+                            draw_start_text(self.screen, maze)
                         elif player.has_started and timer is None:
                             timer = Timer(pygame.time.get_ticks())
                             print("Timer Started")
                         if player.won:
                             timer.stop_time()
                             game_state = GameState.FINISHED
+                            print("Timer Stopped")
                     if game_mode == GameMode.VERSES:
                         pass
-                case GameState.FINISHED:
-                    pass
 
             maze.draw(self.screen)
             if player is not None:
                 player.draw(self.screen)
             if timer is not None:
-                timer.draw(self.screen)
+                timer.draw(self.screen, maze)
+            if game_state == GameState.FINISHED:
+               victory_screen = draw_victory_screen(self.screen, self.font, pos)
+
+            if action:
+                match action:
+                    case Action.RETRY:
+                        player = None
+                        victory_screen = None
+                        timer = None
+                        print("Re-starting Game at player spawning")
+                        game_state = GameState.SPAWN_PLAYER
+                    case Action.EXIT:
+                        running = False
+                        print("Exiting Game")
 
             pygame.display.flip()
             self.frame_rate = self.clock.tick(FPS)

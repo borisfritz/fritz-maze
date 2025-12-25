@@ -2,6 +2,8 @@ import random
 
 from constants import *
 from maze.cell import Cell
+from ui.game_text import draw_start_text, draw_finish_text
+
 
 class MazeGenerator:
     def __init__(self, grid_size, cell_size):
@@ -95,6 +97,7 @@ class MazeGenerator:
         if self.generating and self.current:
             self.current.draw(screen, CURRENT_COLOR)
         if self.start_cell:
-            self.start_cell.draw(screen, START_COLOR)
+            self.start_cell.draw(screen, DARK_GREEN)
         if self.end_cell:
-            self.end_cell.draw(screen, END_COLOR)
+            self.end_cell.draw(screen, DARK_BLUE)
+            draw_finish_text(screen, self)

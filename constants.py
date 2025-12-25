@@ -17,14 +17,29 @@ SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 FPS = 60
 
+# Button Settings
+BUTTON_WIDTH = 150
+BUTTON_HEIGHT = 50
+BUTTON_SPACING = 20
+
+# Timer Settings
+TIMER_FONT_SIZE = 40
+BORDER_PADDING = 30
+BORDER_RADIUS = 20
+
 # Colors
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (150, 150, 150)
+DARK_GRAY = (40, 40, 40)
+GREEN = (0, 255, 0)
+DARK_GREEN = (50, 100, 50)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+DARK_BLUE = (50, 50, 100)
+YELLOW = (255, 255, 0)
 WALL_COLOR = (255, 255, 255)
-PATH_COLOR = (40, 40, 40)
 CURRENT_COLOR = (255, 100, 100)
-START_COLOR = (50, 100, 50)
-END_COLOR = (50, 50, 100)
-PLAYER_COLOR = (255, 0, 0)
 
 def calculate_margins(grid_size, cell_size):
     maze_width = grid_size * cell_size
@@ -54,3 +69,8 @@ class GameState(Enum):
     SPAWN_PLAYER = "spawn player"
     PLAYING = "playing"
     FINISHED = "finished"
+
+class Action(Enum):
+    MAIN_MENU = "Main Menu"
+    RETRY = "retry"
+    EXIT = "exit"
