@@ -7,6 +7,7 @@ GRID_SIZE_HARD = 53
 CELL_SIZE = 20
 MARGIN = 200
 GENERATION_SPEED = 1
+LIBRARY_FILE = "saves/library.json"
 
 # Player Settings
 PLAYER_SIZE = CELL_SIZE // 2 - 2
@@ -49,12 +50,6 @@ def calculate_margins(grid_size, cell_size):
     return margin_x, margin_y
 
 # ENUMS
-class GameScreen(Enum):
-    MAIN = "main menu"
-    TIME_TRIAL_MENU = "time trial menu"
-    VERSES_MENU = "versus menu"
-    GAME = "game"
-
 class GameMode(Enum):
     TIME_TRIAL = "time trial"
     VERSES = "versus"
@@ -75,14 +70,16 @@ class MenuState(Enum):
     MAIN = "main menu"
     TT_MENU = "time trial menu"
     VS_MENU = "versus menu"
+    LOAD_MENU = "load maze menu"
     VICTORY_MENU = "victory menu"
 
 class Action(Enum):
-    MAIN_MENU = "Main Menu"
-    TIME_TRIAL_MENU = "Time Trial Menu"
-    VS_MENU = "Versus Menu"
-    GEN_EASY_MAZE = "Generate Easy Maze"
-    GEN_MEDIUM_MAZE = "Generate Medium Maze"
-    GEN_HARD_MAZE = "Generate Hard Maze"
+    SET_MAIN_MENU = "set main menu"
+    SET_TT_MENU = "set time trial menu"
+    SET_VS_MENU = "set versus menu"
+    SET_LOAD_MENU = "set load menu"
+    GEN_EASY_MAZE = "generate easy maze"
+    GEN_MEDIUM_MAZE = "generate medium maze"
+    GEN_HARD_MAZE = "generate hard maze"
     RETRY = "retry"
     EXIT = "exit"

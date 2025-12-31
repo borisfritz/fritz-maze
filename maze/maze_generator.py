@@ -2,7 +2,7 @@ import random
 
 from constants import *
 from maze.cell import Cell
-from ui.game_text import draw_start_text, draw_finish_text
+from ui.game_text import draw_finish_text
 
 
 class MazeGenerator:
