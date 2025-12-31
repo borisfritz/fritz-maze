@@ -1,5 +1,3 @@
-from unittest import case
-
 import pygame
 import sys
 
@@ -8,113 +6,139 @@ from maze.maze_generator import MazeGenerator
 from player.player import Player
 from ui.game_text import draw_start_text
 from ui.timer import Timer
-from ui.victory_screen import draw_victory_screen
+from ui.screens import draw_main_menu, draw_tt_menu, draw_vs_menu, draw_victory_menu
 
 class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Fritz Maze")
+        self.is_running = True
+
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.frame_rate = 0
         self.font = pygame.font.Font(None, 48)
 
-    def menu(self):
-        pass
+        self.maze = None
+        self.player = None
+        self.timer = None
+        self.window = None
+        self.game_mode = None
+        self.difficulty = None
+        self.game_state = GameState.MENU
+        self.menu_state = MenuState.MAIN
 
-    def play(self, game_mode, maze_difficulty, vs_difficulty=None):
-        maze = None
-        match maze_difficulty:
-            case GameDifficulty.EASY:
-                maze = MazeGenerator(GRID_SIZE_EASY, CELL_SIZE)
-            case GameDifficulty.MEDIUM:
-                maze = MazeGenerator(GRID_SIZE_MEDIUM, CELL_SIZE)
-            case GameDifficulty.HARD:
-                maze = MazeGenerator(GRID_SIZE_HARD, CELL_SIZE)
-
-        player = None
-        timer = None
-        victory_screen = None
-
-        game_state = GameState.GENERATE_MAZE
-        maze.start_generation()
-        print("Started generation")
-
+    def play(self):
         # Game loop
-        running = True
-        while running:
+        while self.is_running:
             pos = pygame.mouse.get_pos()
             action = None
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
-                if event.type == pygame.MOUSEBUTTONDOWN and victory_screen:
-                    action = victory_screen.get_button_clicked(pos)
+                    self.is_running = False
+                if event.type == pygame.MOUSEBUTTONDOWN and window:
+                    action = window.get_button_clicked(pos)
 
             self.screen.fill(BLACK)
 
-            match game_state:
+            match self.game_state:
+                case GameState.MENU:
+                    match self.menu_state:
+                        case MenuState.MAIN:
+                            window = draw_main_menu(self.screen, self.font, pos)
+                        case MenuState.TT_MENU:
+                            window = draw_tt_menu(self.screen, self.font, pos)
+                        case MenuState.VS_MENU:
+                            window = draw_vs_menu(self.screen, self.font, pos)
+
                 case GameState.GENERATE_MAZE:
                     for _ in range(GENERATION_SPEED):
-                        maze.generation_step()
-                    if maze.generation_complete:
+                        self.maze.generation_step()
+                    if self.maze.generation_complete:
                         print("Generation complete")
-                        game_state = GameState.SPAWN_PLAYER
+                        self.game_state = GameState.SPAWN_PLAYER
 
                 case GameState.SPAWN_PLAYER:
-                    player = Player(maze)
+                    self.player = Player(self.maze)
                     print("Player Spawned")
-                    game_state = GameState.PLAYING
+                    self.game_state = GameState.PLAYING
                     print("Time Trial Mode Started")
 
                 case GameState.PLAYING:
-                    if game_mode == GameMode.TIME_TRIAL:
-                        player.update(maze)
-                        if not player.has_started and timer is None:
-                            draw_start_text(self.screen, maze)
-                        elif player.has_started and timer is None:
-                            timer = Timer(pygame.time.get_ticks())
+                    if self.game_mode == GameMode.TIME_TRIAL:
+                        self.player.update(self.maze)
+                        if not self.player.has_started and self.timer is None:
+                            draw_start_text(self.screen, self.maze)
+                        elif self.player.has_started and self.timer is None:
+                            self.timer = Timer(pygame.time.get_ticks())
                             print("Timer Started")
-                        if player.won:
-                            timer.stop_time()
-                            game_state = GameState.FINISHED
+                        if self.player.won:
+                            self.timer.stop_time()
+                            self.game_state = GameState.FINISHED
                             print("Timer Stopped")
-                    if game_mode == GameMode.VERSES:
+                    if self.game_mode == GameMode.VERSES:
                         pass
 
-            maze.draw(self.screen)
-            if player is not None:
-                player.draw(self.screen)
-            if timer is not None:
-                timer.draw(self.screen, maze)
-            if game_state == GameState.FINISHED:
-               victory_screen = draw_victory_screen(self.screen, self.font, timer, pos)
+            if self.maze:
+                self.maze.draw(self.screen)
+            if self.player is not None:
+                self.player.draw(self.screen)
+            if self.timer is not None:
+                self.timer.draw(self.screen, self.maze)
+            if self.game_state == GameState.FINISHED:
+                window = draw_victory_menu(self.screen, self.font, pos, self.timer)
 
             if action:
-                match action:
-                    case Action.RETRY:
-                        player = None
-                        victory_screen = None
-                        timer = None
-                        print("Re-starting Game at player spawning")
-                        game_state = GameState.SPAWN_PLAYER
-                    case Action.EXIT:
-                        running = False
-                        print("Exiting Game")
+                self.set_action(action)
 
             pygame.display.flip()
             self.frame_rate = self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
 
+    def set_action(self, action):
+        match action:
+            case Action.MAIN_MENU:
+                self.maze = None
+                self.player = None
+                self.timer = None
+                self.game_mode = None
+                self.game_state = GameState.MENU
+                self.menu_state = MenuState.MAIN
+            case Action.TIME_TRIAL_MENU:
+                self.menu_state = MenuState.TT_MENU
+                self.game_mode = GameMode.TIME_TRIAL
+            case Action.VS_MENU:
+                pass
+                #self.menu_state = MenuState.VS_MENU
+            case Action.GEN_EASY_MAZE:
+                self.window = None
+                self.maze = MazeGenerator(GRID_SIZE_EASY, CELL_SIZE)
+                self.game_state = GameState.GENERATE_MAZE
+                self.maze.start_generation()
+            case Action.GEN_MEDIUM_MAZE:
+                self.window = None
+                self.maze = MazeGenerator(GRID_SIZE_MEDIUM, CELL_SIZE)
+                self.game_state = GameState.GENERATE_MAZE
+                self.maze.start_generation()
+            case Action.GEN_HARD_MAZE:
+                self.window = None
+                self.maze = MazeGenerator(GRID_SIZE_HARD, CELL_SIZE)
+                self.game_state = GameState.GENERATE_MAZE
+                self.maze.start_generation()
+            case Action.RETRY:
+                self.player = None
+                self.victory_screen = None
+                self.timer = None
+                print("Re-starting Game at player spawning")
+                self.game_state = GameState.SPAWN_PLAYER
+            case Action.EXIT:
+                self.is_running = False
+                print("Exiting Game")
+
 def main():
     game = Game()
-    game_screen = GameScreen.GAME
-    game_mode = GameMode.TIME_TRIAL
-    game_difficulty = GameDifficulty.EASY
-    match game_screen:
-        case GameScreen.GAME:
-            game.play(game_mode, game_difficulty)
+    game.play()
 
 if __name__ == "__main__":
     main()

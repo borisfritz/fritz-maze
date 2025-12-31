@@ -65,12 +65,24 @@ class GameDifficulty(Enum):
     HARD = "hard"
 
 class GameState(Enum):
+    MENU = "menu"
     GENERATE_MAZE = "generate maze"
     SPAWN_PLAYER = "spawn player"
     PLAYING = "playing"
     FINISHED = "finished"
 
+class MenuState(Enum):
+    MAIN = "main menu"
+    TT_MENU = "time trial menu"
+    VS_MENU = "versus menu"
+    VICTORY_MENU = "victory menu"
+
 class Action(Enum):
     MAIN_MENU = "Main Menu"
+    TIME_TRIAL_MENU = "Time Trial Menu"
+    VS_MENU = "Versus Menu"
+    GEN_EASY_MAZE = "Generate Easy Maze"
+    GEN_MEDIUM_MAZE = "Generate Medium Maze"
+    GEN_HARD_MAZE = "Generate Hard Maze"
     RETRY = "retry"
     EXIT = "exit"
