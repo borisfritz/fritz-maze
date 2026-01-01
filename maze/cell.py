@@ -24,6 +24,5 @@ class Cell:
             self.size
         )
         pygame.draw.rect(screen, color, rect)
-
         # show grid
-        # pygame.draw.rect(screen, BLACK, rect, 1)
+        #pygame.draw.rect(screen, BLACK, rect, 1)
