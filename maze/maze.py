@@ -19,14 +19,13 @@ class Maze:
         self.cell_size = CELL_SIZE
         self.margin_x, self.margin_y = calculate_margins(self.grid_size, self.cell_size)
         self.grid = [[Cell(x, y, self.cell_size, margin_x=self.margin_x, margin_y=self.margin_y) for y in range(self.grid_size)] for x in range(self.grid_size)]
-
         self.stack = []
         self.current = None
         self.generating = False
         self.generation_complete = False
-
         self.start_cell = False
         self.end_cell = False
+        self.best_time = None
 
     def get_cell(self, x, y):
         if 0 <= x < self.grid_size and 0 <= y < self.grid_size:

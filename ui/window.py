@@ -20,7 +20,7 @@ class Window:
     def get_button_clicked(self, pos):
         for button in self.buttons:
             if button.is_over(pos):
-                return button.action
+                return button
 
     def draw(self, screen, font, pos, outline=None):
         if outline:
@@ -33,11 +33,11 @@ class Window:
             screen.blit(text, (self.x + (self.width / 2 - text.get_width() / 2), self.y + (50 - text.get_height() / 2)))
 
         start_y = self.y + 100
-
-        for i in range(len(self.buttons)):
-            self.buttons[i].x = self.x + ((self.width / 2) - (self.buttons[i].width / 2))
-            if i == 0:
-                self.buttons[i].y = start_y
-            else:
-                self.buttons[i].y = self.buttons[i - 1].y + (self.buttons[i - 1].height + BUTTON_SPACING)
-            self.buttons[i].draw(screen, pos, WHITE)
+        if self.buttons:
+            for i in range(len(self.buttons)):
+                self.buttons[i].x = self.x + ((self.width / 2) - (self.buttons[i].width / 2))
+                if i == 0:
+                    self.buttons[i].y = start_y
+                else:
+                    self.buttons[i].y = self.buttons[i - 1].y + (self.buttons[i - 1].height + BUTTON_SPACING)
+                self.buttons[i].draw(screen, pos, WHITE)

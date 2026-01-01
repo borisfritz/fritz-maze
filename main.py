@@ -6,7 +6,8 @@ from maze.maze import Maze
 from player.player import Player
 from ui.game_text import draw_start_text
 from ui.timer import Timer
-from ui.menus import draw_main_menu, draw_tt_menu, draw_vs_menu, draw_victory_menu
+from ui.menus import *
+from saves.maze_manager import save_maze_to_library, load_maze_from_library
 
 class Game:
     def __init__(self):
@@ -31,7 +32,7 @@ class Game:
             events = pygame.event.get()
             pos = pygame.mouse.get_pos()
             self.handle_events(events, pos)
-            self.update()
+            self.update(pos)
             self.draw(pos)
             pygame.display.flip()
             self.frame_rate = self.clock.tick(FPS)
@@ -43,12 +44,22 @@ class Game:
                 self.is_running = False
                 print("Exiting Game via Quit")
             if event.type == pygame.MOUSEBUTTONDOWN and self.window:
-                action = self.window.get_button_clicked(pos)
-                if action:
-                    self.process_action(action)
+                button = self.window.get_button_clicked(pos)
+                if button:
+                    self.process_action(button)
 
-    def update(self):
+    def update(self, pos):
         match self.game_state:
+            case GameState.MENU:
+                match self.menu_state:
+                    case MenuState.MAIN:
+                        self.window = main_menu(self.screen, self.font, pos)
+                    case MenuState.TT_MENU:
+                        self.window = tt_menu(self.screen, self.font, pos)
+                    case MenuState.VS_MENU:
+                        self.window = vs_menu(self.screen, self.font, pos)
+                    case MenuState.LOAD_MENU:
+                        self.window = load_menu(self.screen, self.font, pos)
             case GameState.CREATE_MAZE:
                 self.maze = Maze(self.difficulty)
                 self.maze.start_generation()
@@ -73,22 +84,27 @@ class Game:
                         print("Timer Started")
                     if self.player.won:
                         self.timer.stop_time()
-                        self.game_state = GameState.FINISHED
+                        self.window = victory_menu(self.screen, self.font, pos, self.timer)
                         print(f"Timer Stopped at {self.timer.final_time:.2f} seconds")
+                        if self.maze.name:
+                            if self.timer.final_time < self.maze.best_time:
+                                save_maze_to_library(self.maze, self.maze.best_time)
+                                self.window.text = f"New Record: {self.timer.final_time:.2f} seconds!"
+                        if self.maze.best_time:
+                            if self.timer.final_time < self.maze.best_time:
+                                self.maze.best_time = self.timer.final_time
+                                self.window.text = f"New Record: {self.timer.final_time:.2f} seconds!"
+                        else:
+                            self.maze.best_time = self.timer.final_time
+                            self.window.text = f"New Record: {self.timer.final_time:.2f} seconds!"
+                        self.game_state = GameState.FINISHED
                 if self.game_mode == GameMode.VERSES:
                     pass
 
     def draw(self, pos):
         self.screen.fill(BLACK)
-        match self.game_state:
-            case GameState.MENU:
-                match self.menu_state:
-                    case MenuState.MAIN:
-                        self.window = draw_main_menu(self.screen, self.font, pos)
-                    case MenuState.TT_MENU:
-                        self.window = draw_tt_menu(self.screen, self.font, pos)
-                    case MenuState.VS_MENU:
-                        self.window = draw_vs_menu(self.screen, self.font, pos)
+        if self.window:
+            self.window.draw(self.screen, self.font, pos, WHITE)
         if self.maze:
             self.maze.draw(self.screen)
         if self.player:
@@ -97,10 +113,11 @@ class Game:
             self.timer.draw(self.screen, self.maze)
         if self.game_state == GameState.PLAYING and not self.player.has_started:
             draw_start_text(self.screen, self.maze)
-        if self.game_state == GameState.FINISHED:
-            self.window = draw_victory_menu(self.screen, self.font, pos, self.timer)
+        if self.game_state == GameState.FINISHED and self.window:
+            self.window.draw(self.screen, self.font, pos, WHITE)
 
-    def process_action(self, action):
+    def process_action(self, button):
+        action = button.action
         match action:
             case Action.SET_MAIN_MENU:
                 self.maze = None
@@ -114,10 +131,8 @@ class Game:
                 self.game_mode = GameMode.TIME_TRIAL
             case Action.SET_VS_MENU:
                 pass
-                #self.menu_state = MenuState.VS_MENU
             case Action.SET_LOAD_MENU:
-                pass
-                #load maze
+                self.menu_state = MenuState.LOAD_MENU
             case Action.GEN_EASY_MAZE:
                 self.window = None
                 self.difficulty = GameDifficulty.EASY
@@ -130,6 +145,16 @@ class Game:
                 self.window = None
                 self.difficulty = GameDifficulty.HARD
                 self.game_state = GameState.CREATE_MAZE
+            case Action.SAVE_MAZE:
+                save_maze_to_library(self.maze, self.maze.best_time)
+                self.window.text = "Maze Saved!"
+            case Action.LOAD_MAZE:
+                self.maze = load_maze_from_library(button.text)
+                self.player = None
+                self.window = None
+                self.timer = None
+                print(f"Loaded maze: {button.text}")
+                self.game_state = GameState.SPAWN_PLAYER
             case Action.RETRY:
                 self.player = None
                 self.window = None

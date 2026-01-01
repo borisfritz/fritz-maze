@@ -4,7 +4,7 @@ from constants import BORDER_RADIUS
 
 
 class Button:
-    def __init__(self,  button_color, hover_color, text_color, x, y, width, height, text, action):
+    def __init__(self,  button_color, hover_color, text_color, x, y, width, height, text, size, action):
         self.button_color = button_color
         self.hover_color = hover_color
         self.text_color = text_color
@@ -13,6 +13,7 @@ class Button:
         self.width = width
         self.height = height
         self.text = text
+        self.size = size
         self.action = action
 
     def draw(self, screen, pos, outline=None):
@@ -24,7 +25,7 @@ class Button:
         if self.text == ('' or None):
             print(f"No Button Text for {self}")
         else:
-            font = pygame.font.Font(None, 32)
+            font = pygame.font.Font(None, self.size)
             text = font.render(self.text, True, self.text_color)
             screen.blit(text, (self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
 

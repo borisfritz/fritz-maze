@@ -82,5 +82,7 @@ class Action(Enum):
     GEN_EASY_MAZE = "generate easy maze"
     GEN_MEDIUM_MAZE = "generate medium maze"
     GEN_HARD_MAZE = "generate hard maze"
+    SAVE_MAZE = "save maze"
+    LOAD_MAZE = "load maze"
     RETRY = "retry"
     EXIT = "exit"
