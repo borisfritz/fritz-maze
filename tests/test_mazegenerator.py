@@ -1,6 +1,6 @@
 import unittest
 
-from maze.maze_generator import MazeGenerator
+from maze.maze import MazeGenerator
 
 class TestMazeGenerator(unittest.TestCase):
     def test_get_cell_0_0(self):

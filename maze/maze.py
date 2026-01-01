@@ -5,19 +5,26 @@ from maze.cell import Cell
 from ui.game_text import draw_finish_text
 
 
-class MazeGenerator:
-    def __init__(self, grid_size, cell_size):
-        # Create the main maze grid
-        self.grid_size = grid_size
-        self.cell_size = cell_size
+class Maze:
+    def __init__(self, difficulty):
+        self.name = None
+        self.difficulty = difficulty
+        match self.difficulty:
+            case GameDifficulty.EASY:
+                self.grid_size = GRID_SIZE_EASY
+            case GameDifficulty.MEDIUM:
+                self.grid_size = GRID_SIZE_MEDIUM
+            case GameDifficulty.HARD:
+                self.grid_size = GRID_SIZE_HARD
+        self.cell_size = CELL_SIZE
         self.margin_x, self.margin_y = calculate_margins(self.grid_size, self.cell_size)
         self.grid = [[Cell(x, y, self.cell_size, margin_x=self.margin_x, margin_y=self.margin_y) for y in range(self.grid_size)] for x in range(self.grid_size)]
-        # initialize maze generation variables
+
         self.stack = []
         self.current = None
         self.generating = False
         self.generation_complete = False
-        # initialize start and end cells
+
         self.start_cell = False
         self.end_cell = False
 

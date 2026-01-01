@@ -55,12 +55,13 @@ class GameMode(Enum):
     VERSES = "versus"
 
 class GameDifficulty(Enum):
-    EASY = "easy"
-    MEDIUM = "medium"
-    HARD = "hard"
+    EASY = "Easy"
+    MEDIUM = "Medium"
+    HARD = "Hard"
 
 class GameState(Enum):
     MENU = "menu"
+    CREATE_MAZE = "create maze"
     GENERATE_MAZE = "generate maze"
     SPAWN_PLAYER = "spawn player"
     PLAYING = "playing"

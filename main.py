@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from constants import *
-from maze.maze_generator import MazeGenerator
+from maze.maze import Maze
 from player.player import Player
 from ui.game_text import draw_start_text
 from ui.timer import Timer
@@ -13,20 +13,18 @@ class Game:
         pygame.init()
         pygame.display.set_caption("Fritz Maze")
         self.is_running = True
-
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.frame_rate = 0
         self.font = pygame.font.Font(None, 48)
-
+        self.game_state = GameState.MENU
+        self.menu_state = MenuState.MAIN
         self.maze = None
+        self.difficulty = None
         self.player = None
         self.timer = None
         self.window = None
         self.game_mode = None
-        self.difficulty = None
-        self.game_state = GameState.MENU
-        self.menu_state = MenuState.MAIN
 
     def play(self):
         while self.is_running:
@@ -68,6 +66,11 @@ class Game:
                         self.window = draw_tt_menu(self.screen, self.font, pos)
                     case MenuState.VS_MENU:
                         self.window = draw_vs_menu(self.screen, self.font, pos)
+            case GameState.CREATE_MAZE:
+                self.maze = Maze(self.difficulty)
+                self.maze.start_generation()
+                print(f"Generating {self.difficulty.value} Maze")
+                self.game_state = GameState.GENERATE_MAZE
             case GameState.GENERATE_MAZE:
                 for _ in range(GENERATION_SPEED):
                     self.maze.generation_step()
@@ -115,24 +118,15 @@ class Game:
             case Action.GEN_EASY_MAZE:
                 self.window = None
                 self.difficulty = GameDifficulty.EASY
-                self.maze = MazeGenerator(GRID_SIZE_EASY, CELL_SIZE)
-                self.game_state = GameState.GENERATE_MAZE
-                self.maze.start_generation()
-                print(f"Generating {self.difficulty.value} Maze")
+                self.game_state = GameState.CREATE_MAZE
             case Action.GEN_MEDIUM_MAZE:
                 self.window = None
                 self.difficulty = GameDifficulty.MEDIUM
-                self.maze = MazeGenerator(GRID_SIZE_MEDIUM, CELL_SIZE)
-                self.game_state = GameState.GENERATE_MAZE
-                self.maze.start_generation()
-                print(f"Generating {self.difficulty.value} Maze")
+                self.game_state = GameState.CREATE_MAZE
             case Action.GEN_HARD_MAZE:
                 self.window = None
                 self.difficulty = GameDifficulty.HARD
-                self.maze = MazeGenerator(GRID_SIZE_HARD, CELL_SIZE)
-                self.game_state = GameState.GENERATE_MAZE
-                self.maze.start_generation()
-                print(f"Generating {self.difficulty.value} Maze")
+                self.game_state = GameState.CREATE_MAZE
             case Action.RETRY:
                 self.player = None
                 self.window = None
@@ -144,6 +138,7 @@ class Game:
                 print("Exiting Game")
 
 def main():
+    print("Starting Game at Main Menu!  Welcome!")
     game = Game()
     game.play()
 
