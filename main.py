@@ -28,44 +28,27 @@ class Game:
 
     def play(self):
         while self.is_running:
+            events = pygame.event.get()
             pos = pygame.mouse.get_pos()
-            action = None
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.is_running = False
-                    print("Exiting Game via Quit")
-                if event.type == pygame.MOUSEBUTTONDOWN and self.window:
-                    action = self.window.get_button_clicked(pos)
-
-            self.screen.fill(BLACK)
-            self.display_state(pos)
-            if self.maze:
-                self.maze.draw(self.screen)
-            if self.player is not None:
-                self.player.draw(self.screen)
-            if self.timer is not None:
-                self.timer.draw(self.screen, self.maze)
-            if self.game_state == GameState.FINISHED:
-                self.window = draw_victory_menu(self.screen, self.font, pos, self.timer)
-
-            if action:
-                self.set_action(action)
-
+            self.handle_events(events, pos)
+            self.update()
+            self.draw(pos)
             pygame.display.flip()
             self.frame_rate = self.clock.tick(FPS)
         pygame.quit()
-        sys.exit()
 
-    def display_state(self, pos):
+    def handle_events(self, events, pos):
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.is_running = False
+                print("Exiting Game via Quit")
+            if event.type == pygame.MOUSEBUTTONDOWN and self.window:
+                action = self.window.get_button_clicked(pos)
+                if action:
+                    self.process_action(action)
+
+    def update(self):
         match self.game_state:
-            case GameState.MENU:
-                match self.menu_state:
-                    case MenuState.MAIN:
-                        self.window = draw_main_menu(self.screen, self.font, pos)
-                    case MenuState.TT_MENU:
-                        self.window = draw_tt_menu(self.screen, self.font, pos)
-                    case MenuState.VS_MENU:
-                        self.window = draw_vs_menu(self.screen, self.font, pos)
             case GameState.CREATE_MAZE:
                 self.maze = Maze(self.difficulty)
                 self.maze.start_generation()
@@ -85,9 +68,7 @@ class Game:
             case GameState.PLAYING:
                 if self.game_mode == GameMode.TIME_TRIAL:
                     self.player.update(self.maze)
-                    if not self.player.has_started and self.timer is None:
-                        draw_start_text(self.screen, self.maze)
-                    elif self.player.has_started and self.timer is None:
+                    if self.player.has_started and self.timer is None:
                         self.timer = Timer(pygame.time.get_ticks())
                         print("Timer Started")
                     if self.player.won:
@@ -97,7 +78,29 @@ class Game:
                 if self.game_mode == GameMode.VERSES:
                     pass
 
-    def set_action(self, action):
+    def draw(self, pos):
+        self.screen.fill(BLACK)
+        match self.game_state:
+            case GameState.MENU:
+                match self.menu_state:
+                    case MenuState.MAIN:
+                        self.window = draw_main_menu(self.screen, self.font, pos)
+                    case MenuState.TT_MENU:
+                        self.window = draw_tt_menu(self.screen, self.font, pos)
+                    case MenuState.VS_MENU:
+                        self.window = draw_vs_menu(self.screen, self.font, pos)
+        if self.maze:
+            self.maze.draw(self.screen)
+        if self.player:
+            self.player.draw(self.screen)
+        if self.timer:
+            self.timer.draw(self.screen, self.maze)
+        if self.game_state == GameState.PLAYING and not self.player.has_started:
+            draw_start_text(self.screen, self.maze)
+        if self.game_state == GameState.FINISHED:
+            self.window = draw_victory_menu(self.screen, self.font, pos, self.timer)
+
+    def process_action(self, action):
         match action:
             case Action.SET_MAIN_MENU:
                 self.maze = None
@@ -141,6 +144,7 @@ def main():
     print("Starting Game at Main Menu!  Welcome!")
     game = Game()
     game.play()
+    sys.exit()
 
 if __name__ == "__main__":
     main()
