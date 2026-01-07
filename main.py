@@ -3,6 +3,7 @@ import sys
 
 from maze.maze import Maze
 from player.player import Player
+from player.ai_controller import AIController
 from ui.game_text import draw_start_text
 from ui.timer import Timer
 from ui.menus import *
@@ -22,6 +23,8 @@ class Game:
         self.maze = None
         self.difficulty = None
         self.player = None
+        self.ai_player = None
+        self.ai_brain = None
         self.timer = None
         self.window = None
         self.game_mode = None
@@ -75,6 +78,8 @@ class Game:
             self.maze.draw(self.screen)
         if self.player:
             self.player.draw(self.screen)
+        if self.ai_player:
+            self.ai_player.draw(self.screen)
         if self.timer:
             self.timer.draw(self.screen, self.maze)
         if self.game_state == GameState.PLAYING and not self.player.has_started:
@@ -95,7 +100,9 @@ class Game:
                 self.game_mode = GameMode.TIME_TRIAL
                 self.window = None
             case Action.SET_VS_MENU:
-                pass
+                self.menu_state = MenuState.VS_MENU
+                self.game_mode = GameMode.VERSES
+                self.window = None
             case Action.SET_LOAD_MENU:
                 self.menu_state = MenuState.LOAD_MENU
                 self.window = None
@@ -157,19 +164,27 @@ class Game:
 
     def _spawn_player(self):
         self.player = Player(self.maze)
+        if self.game_mode == GameMode.VERSES:
+            self.ai_player = Player(self.maze, RED)
+            self.ai_brain = AIController(self.difficulty)
         print("Player Spawned")
         self.game_state = GameState.PLAYING
 
     def _update_playing_state(self, pos):
+        self.player.update(self.maze)
         if self.game_mode == GameMode.TIME_TRIAL:
-            self.player.update(self.maze)
             if self.player.has_started and self.timer is None:
                 self.timer = Timer(pygame.time.get_ticks())
                 print("Timer Started")
-            if self.player.won:
-                self._handle_victory(pos)
         if self.game_mode == GameMode.VERSES:
-            pass
+            if self.player.has_started:
+                if self.ai_player:
+                    ai_move = self.ai_brain.get_move(self.ai_player, self.maze)
+                    self.ai_player.update(self.maze, ai_move)
+                    if self.ai_player.won:
+                        self._handle_victory(pos)
+        if self.player.won:
+            self._handle_victory(pos)
 
     def _handle_victory(self, pos):
         if self.game_mode == GameMode.TIME_TRIAL:
@@ -185,12 +200,16 @@ class Game:
                     print(f"New Record Time Saved")
             self.game_state = GameState.FINISHED
         if self.game_mode == GameMode.VERSES:
-            pass
+            winner_text = "You Win!" if self.player.won else "You Lose!"
+            self.window = victory_menu(self.screen, self.font, pos)
+            self.window.text = winner_text
+            self.game_state = GameState.FINISHED
 
     def _reset_game_elements(self, reset_maze=True):
         if reset_maze:
             self.maze = None
         self.player = None
+        self.ai_player = None
         self.timer = None
         self.window = None
 

@@ -38,7 +38,16 @@ def load_menu(screen, font, pos):
     return menu
 
 def vs_menu(screen, font, pos):
-    pass
+    menu = _create_window("Versus Mode", WHITE)
+    buttons = [
+        ('Easy AI', Action.GEN_EASY_MAZE),
+        ('Medium AI', Action.GEN_MEDIUM_MAZE),
+        ('Hard AI', Action.GEN_HARD_MAZE),
+        ('Main Menu', Action.SET_MAIN_MENU)
+    ]
+    for text, action in buttons:
+        menu.add_button(Button(GRAY, WHITE, BLACK,0, 0, BUTTON_WIDTH, BUTTON_HEIGHT, text, 32, action))
+    return menu
 
 def victory_menu(screen, font, pos, timer=None):
     title = f"Victory in: {timer.final_time:.2f}s!" if timer else "Victory!"

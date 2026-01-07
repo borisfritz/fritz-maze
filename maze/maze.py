@@ -5,7 +5,6 @@ from constants import *
 from maze.grid import Grid
 from ui.game_text import draw_finish_text
 
-
 class Maze:
     def __init__(self, difficulty):
         self.name = None

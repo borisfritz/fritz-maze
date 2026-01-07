@@ -3,29 +3,33 @@ import pygame
 from constants import *
 
 class Player:
-    def __init__(self, maze):
+    def __init__(self, maze, color=GREEN):
         self.margin_x, self.margin_y = calculate_margins(maze.grid_size, maze.cell_size)
         self.x = self.margin_x + maze.start_cell.x * maze.cell_size + maze.cell_size // 2
         self.y = self.margin_y + maze.start_cell.y * maze.cell_size + maze.cell_size // 2
         self.size = PLAYER_SIZE
         self.speed = PLAYER_SPEED
+        self.color = color
         self.start_x = self.x
         self.start_y = self.y
         self.has_started = False
         self.won = False
 
     def draw(self, screen):
-        pygame.draw.circle(screen, RED, (self.x, self.y), self.size)
+        pygame.draw.circle(screen, self.color, (self.x, self.y), self.size)
 
     def get_current_cell(self, maze):
         curr_col = int((self.x - self.margin_x) / maze.cell_size)
         curr_row = int((self.y - self.margin_y) / maze.cell_size)
         return maze.grid.get_cell(curr_col, curr_row)
 
-    def update(self, maze):
+    def update(self, maze, ai_direction=None):
         if self.start_x != self.x or self.start_y != self.y:
             self.has_started = True
-        dx, dy = self._handle_input()
+        if ai_direction:
+            dx, dy = ai_direction
+        else:
+            dx, dy = self._handle_input()
         if dx != 0 and not self.collides_with_walls(self.x + dx, self.y, maze):
             self.x += dx
         if dy != 0 and not self.collides_with_walls(self.x, self.y + dy, maze):
