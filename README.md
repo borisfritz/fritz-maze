@@ -14,9 +14,7 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 ## Prerequisites
 
 - **Python**: Version 3.13 or higher is recommended.
-  - On Windows, install with `winget install Python.Python.3.13` inside PowerShell.
 - **uv**: A fast Python package manager.
-  - On Windows, install with `winget install --id=astral-sh.uv  -e` inside PowerShell.
 
 ## Installation
 
