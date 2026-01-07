@@ -7,55 +7,43 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 - **Random Maze Generation**: Every game is unique!
 - **Difficulty Levels**: Choose between Easy, Medium, and Hard.
 - **Time Trial Mode**: Race against the clock and set new records.
+- **VS Mode (Coming soon!)**: Compete against an AI opponent! 
 - **Save & Load**: Save generated mazes and reload them anytime.
 - **Cross-Platform**: Works on both Windows and Linux.
 
 ## Prerequisites
 
 - **Python**: Version 3.13 or higher is recommended.
-- **uv** (Optional but recommended): A fast Python package manager.
+  - On Windows, install with `winget install Python.Python.3.13` inside PowerShell.
+- **uv**: A fast Python package manager.
+  - On Windows, install with `winget install --id=astral-sh.uv  -e` inside PowerShell.
 
 ## Installation
 
-### Using uv (Recommended)
-
-If you have `uv` installed, you can run the game directly:
-
-```bash
-uv run main.py
-```
-
-### Using pip
-
-1. Clone or download the repository.
-2. Navigate to the project directory:
-   ```bash
-   cd fritz-maze
-   ```
-3. Install the required dependencies:
-   ```bash
-   pip install pygame
-   ```
+- Install Prerequisite Tools:
+  - To install Python, follow the [official instructions](https://www.python.org/downloads/).
+  - To install UV, follow the [official instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation)
+    - On Windows, [WinGet](https://winstall.app/apps/astral-sh.uv) is recommended.
+- Download the zip file here on GitHub and extract it to a folder of your choice.
 
 ## How to Run
 
 ### Windows
 
-1. Open **Command Prompt** or **PowerShell**.
-2. Navigate to the project folder.
-3. Run the game:
+1. Navigate to the project folder in Explorer.
+2. Right-click in the explorer and select **Open In Terminal**.
+3. Run the game by executing the following command:
    ```powershell
-   python main.py
+   uv run main.py
    ```
 
 ### Linux
 
 1. Open your **Terminal**.
 2. Navigate to the project folder.
-3. Ensure you have the necessary dependencies for Pygame (may vary by distribution, e.g., `sudo apt-get install python3-pygame`).
-4. Run the game:
+3. Run the game with the following command:
    ```bash
-   python3 main.py
+   uv  run main.py
    ```
 
 ## Controls
