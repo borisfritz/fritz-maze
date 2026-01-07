@@ -1,7 +1,7 @@
 import random
 
 from constants import *
-from maze.cell import Grid
+from maze.grid import Grid
 from ui.game_text import draw_finish_text
 
 
