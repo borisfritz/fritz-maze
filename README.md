@@ -21,7 +21,7 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 - Install Prerequisite Tools:
   - To install Python, follow the [official instructions](https://www.python.org/downloads/).
   - To install uv, follow the [official instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation)
-    - On Windows, [WinGet](https://winstall.app/apps/astral-sh.uv) is recommended.
+    - On Windows, I used [WinGet](https://winstall.app/apps/astral-sh.uv).
 - Download the zip file here on GitHub and extract it to a folder of your choice.
 
 ## How to Run
