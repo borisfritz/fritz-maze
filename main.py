@@ -222,16 +222,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# main.py - 204
-# constants.py - 88
-# maze.py - 95
-# grid.py - 62
-# maze_manager.py - 20
-# player.py - 74
-# window.py - 69
-# button.py - 37
-# timer.py - 29
-# menus.py - 54
-# game_text.py - 18
-#
-# total - 750
+# total - 861
