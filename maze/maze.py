@@ -39,8 +39,11 @@ class Maze:
     def generation_step(self):
         if not self.generating or self.generation_complete:
             return
+        if self.current:
+            self.current.is_active = False
         if self.stack:
             self.current = self.stack[-1]
+            self.current.is_active = True
             unvisited_neighbors = self.grid.get_unvisited_neighbors(self.current)
             if unvisited_neighbors:
                 mid_cell, next_cell = random.choice(unvisited_neighbors)

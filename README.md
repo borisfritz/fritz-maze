@@ -30,7 +30,8 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 
 1. Navigate to the project folder in Explorer.
 2. Right-click in the explorer and select **Open In Terminal**.
-3. Run the game by executing the following command:
+    1. You can also use the terminal and navigate to the folder directly.
+3. Run the game by executing the following command in the terminal:
    ```powershell
    uv run main.py
    ```
