@@ -7,7 +7,7 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 - **Random Maze Generation**: Every game is unique!
 - **Difficulty Levels**: Choose between Easy, Medium, and Hard.
 - **Time Trial Mode**: Race against the clock and set new records.
-- **VS Mode (Coming soon!)**: Compete against an AI opponent! 
+- **Versus Mode**: Compete against an AI opponent! 
 - **Save & Load**: Save generated mazes and reload them anytime.
 - **Cross-Platform**: Works on both Windows and Linux.
 
@@ -53,12 +53,12 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 
 ## How to Play
 
-1. **Main Menu**: Choose "Time Trial" to start a new game or "Load Maze" to play a previously saved one.
+1. **Main Menu**: Choose "Time Trial" or "Versus" to start a new game or "Load Maze" to play a previously saved Time Trial Maze.
 2. **Select Difficulty**: Choose your preferred challenge level.
 3. **Maze Generation**: Watch as the maze is built step-by-step.
-4. **Race**: Once the player spawns (red circle), move towards the finish line (represented by the end of the path).
-5. **Win**: Reach the exit to stop the timer and see if you set a new record!
-6. **Save**: After finishing a maze, you can save it to play again later.
+4. **Race**: Once the player spawns (green circle), move towards the finish line (represented by the end of the path).
+5. **Win**: Reach the exit before the ai or to stop the timer and see if you set a new record!
+6. **Save**: After finishing a Time Trial Maze, you can save it to play again later.
 
 ## License
 
