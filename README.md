@@ -23,6 +23,7 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
   - To install uv, follow the [official instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation)
     - On Windows, I used [WinGet](https://winstall.app/apps/astral-sh.uv).
 - Download the zip file here on GitHub and extract it to a folder of your choice.
+- Navigate to the project folder in your terminal and run the command `uv sync`.
 
 ## How to Run
 
