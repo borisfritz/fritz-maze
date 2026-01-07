@@ -16,38 +16,25 @@ A fun and challenging maze game built with Python and Pygame. Navigate through r
 - **Python**: Version 3.13 
 - **uv**: A fast Python package manager
 
-## Installation
-
-- Install Prerequisite Tools:
-  - To install Python, follow the [official instructions](https://www.python.org/downloads/) for Python 3.13.
-  - To install uv, follow the [official instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation)
-    - On Windows, I used [WinGet](https://winstall.app/apps/astral-sh.uv).
-- Download the zip file here on GitHub and extract it to a folder of your choice.
-- Navigate to the project folder in your terminal and run the command:
-    ```
-    uv sync.
-    ```
-
-## How to Run
+## Installation and Usage
 
 ### Windows
-
-1. Navigate to the project folder in Explorer.
-2. Right-click in the explorer and select **Open In Terminal**.
-    1. You can also use the terminal and navigate to the folder directly.
-3. Run the game by executing the following command in the terminal:
-   ```powershell
-   uv run main.py
-   ```
+- Right-click the Start button and open **Terminal**
+  - Install uv via the terminal with [WinGet](https://docs.astral.sh/uv/getting-started/installation/#winget) command: `winget install -e --id astral-sh.uv`
+  - Install Python 3.13 with the [uv](https://docs.astral.sh/uv/guides/install-python/#installing-a-specific-version) command `uv python install Python3.13` inside the terminal.
+    - Pygame doesn't seem to run with Python 3.14 on windows. Feel free to solve that problem yourself!  I'm moving on with my boot.dev courses. =D
+- Download the zip file here on GitHub and extract it to a folder of your choice.
+- Navigate to the project folder in your terminal and run the command `uv sync` to install all dependencies.
+    - This can be easily done by right-clicking the project folder and selecting **Open In Terminal**.
+- Run the game with `uv run main.py` while in the project folder.
+  - Enjoy!
 
 ### Linux
-
-1. Open your **Terminal**.
-2. Navigate to the project folder.
-3. Run the game with the following command:
-   ```bash
-   uv run main.py
-   ```
+- Install uv and Python via the terminal with your appropriate package manager.
+- Download the zip file here on GitHub and extract it to a folder of your choice.
+- Navigate to the project folder in your terminal and run the command `uv sync` to install all dependencies.
+- Run the game with `uv run main.py` while in the project folder.
+  - Enjoy!
 
 ## Controls
 
