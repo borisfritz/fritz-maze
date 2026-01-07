@@ -1,7 +1,7 @@
 import random
 
 from constants import *
-from maze.cell import Cell
+from maze.cell import Grid
 from ui.game_text import draw_finish_text
 
 
@@ -18,7 +18,7 @@ class Maze:
                 self.grid_size = GRID_SIZE_HARD
         self.cell_size = CELL_SIZE
         self.margin_x, self.margin_y = calculate_margins(self.grid_size, self.cell_size)
-        self.grid = [[Cell(x, y, self.cell_size, margin_x=self.margin_x, margin_y=self.margin_y) for y in range(self.grid_size)] for x in range(self.grid_size)]
+        self.grid = Grid(self.grid_size, self.grid_size, self.cell_size, self.margin_x, self.margin_y)
         self.stack = []
         self.current = None
         self.generating = False
@@ -27,13 +27,8 @@ class Maze:
         self.end_cell = False
         self.best_time = None
 
-    def get_cell(self, x, y):
-        if 0 <= x < self.grid_size and 0 <= y < self.grid_size:
-            return self.grid[x][y]
-        return None
-
     def start_generation(self):
-        start_cell = self.grid[1][1]
+        start_cell = self.grid.get_cell(1,1)
         start_cell.visited = True
         start_cell.is_wall = False
         self.current = start_cell
@@ -41,32 +36,20 @@ class Maze:
         self.generating = True
         self.generation_complete = False
 
-    def get_unvisited_neighbors(self, cell):
-        neighbors = []
-        directions = [(0, -2), (2, 0), (0, 2), (-2, 0)] # up, right, down, left
-        for dx, dy in directions:
-            nx, ny = cell.x + dx, cell.y + dy
-            neighbor = self.get_cell(nx, ny)
-            if neighbor and not neighbor.visited:
-                neighbors.append((neighbor, dx // 2, dy // 2))
-        return neighbors
-
     def generation_step(self):
         if not self.generating or self.generation_complete:
             return
         if self.stack:
             self.current = self.stack[-1]
-            neighbors = self.get_unvisited_neighbors(self.current)
-            if neighbors:
-                next_cell, dx, dy = random.choice(neighbors)
-                wall_x = self.current.x + dx
-                wall_y = self.current.y + dy
-                wall = self.get_cell(wall_x, wall_y)
-                if wall:
-                    wall.is_wall = False
-                    wall.visited = True
-                next_cell.visited = True
+            unvisited_neighbors = self.grid.get_unvisited_neighbors(self.current)
+            if unvisited_neighbors:
+                mid_cell, next_cell = random.choice(unvisited_neighbors)
+                self.grid.add_path(self.current, mid_cell)
+                self.grid.add_path(mid_cell, next_cell)
+                mid_cell.is_wall = False
+                mid_cell.visited = True
                 next_cell.is_wall = False
+                next_cell.visited = True
                 self.stack.append(next_cell)
             else:
                 self.stack.pop()
@@ -74,36 +57,37 @@ class Maze:
             self.generate_start_finish_cells()
             self.generating = False
             self.generation_complete = True
+            self.current = False
 
     def generate_start_finish_cells(self):
         start_set = False
         while not start_set:
             a = random.randint(1, self.grid_size - 1)
-            if not self.grid[1][a].is_wall:
-                start = self.grid[0][a]
+            check_a = self.grid.get_cell(1,a)
+            if not check_a.is_wall:
+                start = self.grid.get_cell(0, a)
                 start.is_wall = False
                 start.visited = True
+                start.is_start = True
+                self.grid.add_path(start, check_a)
                 self.start_cell = start
                 start_set = True
         end_set = False
         while not end_set:
             b = random.randint(1, self.grid_size - 1)
-            if not self.grid[self.grid_size - 2][b].is_wall:
-                end = self.grid[self.grid_size - 1][b]
+            check_b = self.grid.get_cell(self.grid_size - 2, b)
+            if not check_b.is_wall:
+                end = self.grid.get_cell(self.grid_size - 1, b)
                 end.is_wall = False
                 end.visited = True
-                self.end_cell = end
                 end.is_finish = True
+                self.grid.add_path(end, check_b)
+                self.end_cell = end
                 end_set = True
 
+
     def draw(self, screen):
-        for row in self.grid:
-            for cell in row:
-                cell.draw(screen)
-        if self.generating and self.current:
-            self.current.draw(screen, CURRENT_COLOR)
-        if self.start_cell:
-            self.start_cell.draw(screen, DARK_GREEN)
+        if self.grid:
+            self.grid.draw(screen)
         if self.end_cell:
-            self.end_cell.draw(screen, DARK_BLUE)
             draw_finish_text(screen, self)

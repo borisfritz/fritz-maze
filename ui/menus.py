@@ -1,7 +1,7 @@
 from ui.window import Window
 from ui.button import Button
 from constants import *
-from saves.maze_manager import get_saved_mazes
+from maze.maze_manager import get_saved_mazes
 
 def main_menu(screen, font, pos):
     main_menu_text = "Fritz Maze Game!"
@@ -36,6 +36,8 @@ def load_menu(screen, font, pos):
     for name in saved_mazes:
         load_button = Button(GRAY, WHITE, BLACK, 0, 0, 200, BUTTON_HEIGHT, name, 32, Action.LOAD_MAZE)
         load_screen.add_button(load_button)
+    main_menu_button = Button(GRAY, WHITE, BLACK, 0, 0, 200, BUTTON_HEIGHT, 'Main Menu', 32, Action.SET_MAIN_MENU)
+    load_screen.add_button(main_menu_button)
     return load_screen
 
 def vs_menu(screen, font, pos):

@@ -4,23 +4,25 @@ from constants import *
 
 class Player:
     def __init__(self, maze):
-        # Initialize player location and stats
         self.margin_x, self.margin_y = calculate_margins(maze.grid_size, maze.cell_size)
-        self.x = self.margin_x + maze.start_cell.x * maze.start_cell.size + maze.start_cell.size // 2
-        self.y = self.margin_y + maze.start_cell.y * maze.start_cell.size + maze.start_cell.size // 2
-        self.size = PLAYER_SIZE  # radius
+        self.x = self.margin_x + maze.start_cell.x * maze.cell_size + maze.cell_size // 2
+        self.y = self.margin_y + maze.start_cell.y * maze.cell_size + maze.cell_size // 2
+        self.size = PLAYER_SIZE
         self.speed = PLAYER_SPEED
-        # checks to see when player starts moving to start the mode
         self.start_x = self.x
         self.start_y = self.y
         self.has_started = False
-        # checks to see if player has won the game
         self.won = False
 
     def draw(self, screen):
         pygame.draw.circle(screen, RED, (self.x, self.y), self.size)
 
-    def update(self, grid):
+    def get_pos(self, maze):
+        curr_col = int((self.x - self.margin_x) / maze.cell_size)
+        curr_row = int((self.y - self.margin_y) / maze.cell_size)
+        return maze.grid.get_cell(curr_col, curr_row)
+
+    def update(self, maze):
         if self.start_x != self.x or self.start_y != self.y:
             self.has_started = True
         keys = pygame.key.get_pressed()
@@ -37,33 +39,39 @@ class Player:
 
         if dx != 0:
             new_x = self.x + dx
-            if not self.collides_with_walls(new_x, self.y, grid):
+            if not self.collides_with_walls(new_x, self.y, maze):
                 self.x = new_x
         if dy != 0:
             new_y = self.y + dy
-            if not self.collides_with_walls(self.x, new_y, grid):
+            if not self.collides_with_walls(self.x, new_y, maze):
                 self.y = new_y
 
-    def collides_with_walls(self, x, y, grid):
-        if x - self.size < self.margin_x:
-            return True
-        if x + self.size > self.margin_x + grid.grid_size * grid.cell_size:
-            return True
-        if y - self.size < self.margin_y:
-            return True
-        if y + self.size > self.margin_y + grid.grid_size * grid.cell_size:
+        current_cell = self.get_pos(maze)
+        if current_cell.is_finish:
+            self.won = True
+
+    def collides_with_walls(self, x, y, maze):
+        if x - self.size < self.margin_x or \
+           x + self.size > self.margin_x + maze.grid_size * maze.cell_size or \
+           y - self.size < self.margin_y or \
+           y + self.size > self.margin_y + maze.grid_size * maze.cell_size:
             return True
 
-        min_col = int((x - self.size - self.margin_x) / grid.cell_size)
-        max_col = int((x + self.size - self.margin_x) / grid.cell_size)
-        min_row = int((y - self.size - self.margin_y) / grid.cell_size)
-        max_row = int((y + self.size - self.margin_y) / grid.cell_size)
+        current_cell = self.get_pos(maze)
+        if not current_cell:
+            return True
+
+        min_col = int((x - self.size - self.margin_x) / maze.cell_size)
+        max_col = int((x + self.size - self.margin_x) / maze.cell_size)
+        min_row = int((y - self.size - self.margin_y) / maze.cell_size)
+        max_row = int((y + self.size - self.margin_y) / maze.cell_size)
 
         for row in range(min_row, max_row + 1):
             for col in range(min_col, max_col + 1):
-                cell = grid.get_cell(col, row)
-                if cell and cell.is_wall:
+                target_cell = maze.grid.get_cell(col, row)
+                if not target_cell:
                     return True
-                if cell and cell.is_finish:
-                    self.won = True
+                if target_cell != current_cell:
+                    if target_cell not in current_cell.neighbors:
+                        return True
         return False
