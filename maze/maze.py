@@ -1,4 +1,5 @@
 import random
+from unittest import case
 
 from constants import *
 from maze.grid import Grid
@@ -9,13 +10,7 @@ class Maze:
     def __init__(self, difficulty):
         self.name = None
         self.difficulty = difficulty
-        match self.difficulty:
-            case GameDifficulty.EASY:
-                self.grid_size = GRID_SIZE_EASY
-            case GameDifficulty.MEDIUM:
-                self.grid_size = GRID_SIZE_MEDIUM
-            case GameDifficulty.HARD:
-                self.grid_size = GRID_SIZE_HARD
+        self.grid_size = self._set_grid_size()
         self.cell_size = CELL_SIZE
         self.margin_x, self.margin_y = calculate_margins(self.grid_size, self.cell_size)
         self.grid = Grid(self.grid_size, self.grid_size, self.cell_size, self.margin_x, self.margin_y)
@@ -29,8 +24,7 @@ class Maze:
 
     def start_generation(self):
         start_cell = self.grid.get_cell(1,1)
-        start_cell.visited = True
-        start_cell.is_wall = False
+        self._visit_cell(start_cell)
         self.current = start_cell
         self.stack = [start_cell]
         self.generating = True
@@ -49,10 +43,8 @@ class Maze:
                 mid_cell, next_cell = random.choice(unvisited_neighbors)
                 self.grid.add_path(self.current, mid_cell)
                 self.grid.add_path(mid_cell, next_cell)
-                mid_cell.is_wall = False
-                mid_cell.visited = True
-                next_cell.is_wall = False
-                next_cell.visited = True
+                self._visit_cell(mid_cell)
+                self._visit_cell(next_cell)
                 self.stack.append(next_cell)
             else:
                 self.stack.pop()
@@ -63,34 +55,41 @@ class Maze:
             self.current = False
 
     def generate_start_finish_cells(self):
-        start_set = False
-        while not start_set:
-            a = random.randint(1, self.grid_size - 1)
-            check_a = self.grid.get_cell(1,a)
-            if not check_a.is_wall:
-                start = self.grid.get_cell(0, a)
-                start.is_wall = False
-                start.visited = True
-                start.is_start = True
-                self.grid.add_path(start, check_a)
-                self.start_cell = start
-                start_set = True
-        end_set = False
-        while not end_set:
-            b = random.randint(1, self.grid_size - 1)
-            check_b = self.grid.get_cell(self.grid_size - 2, b)
-            if not check_b.is_wall:
-                end = self.grid.get_cell(self.grid_size - 1, b)
-                end.is_wall = False
-                end.visited = True
-                end.is_finish = True
-                self.grid.add_path(end, check_b)
-                self.end_cell = end
-                end_set = True
-
+        self._initialize_special_cell(0, 1, is_start=True)
+        self._initialize_special_cell(self.grid_size - 1, self.grid_size - 2, is_start=False)
 
     def draw(self, screen):
         if self.grid:
             self.grid.draw(screen)
         if self.end_cell:
             draw_finish_text(screen, self)
+
+    def _visit_cell(self, cell):
+        cell.visited = True
+        cell.is_wall = False
+
+    def _set_grid_size(self):
+        match self.difficulty:
+            case GameDifficulty.EASY:
+                return GRID_SIZE_EASY
+            case GameDifficulty.MEDIUM:
+                return GRID_SIZE_MEDIUM
+            case GameDifficulty.HARD:
+                return GRID_SIZE_HARD
+        return GRID_SIZE_EASY
+
+    def _initialize_special_cell(self, x, check_x, is_start=True):
+        while True:
+            y = random.randint(1, self.grid_size - 1)
+            check_cell = self.grid.get_cell(check_x, y)
+            if not check_cell.is_wall:
+                special_cell = self.grid.get_cell(x, y)
+                self._visit_cell(special_cell)
+                if is_start:
+                    special_cell.is_start = True
+                    self.start_cell = special_cell
+                else:
+                    special_cell.is_finish = True
+                    self.end_cell = special_cell
+                self.grid.add_path(special_cell, check_cell)
+                return

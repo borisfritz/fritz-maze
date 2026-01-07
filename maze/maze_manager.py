@@ -16,4 +16,5 @@ def load_maze(name):
         return None
 
 def get_saved_mazes():
+    os.makedirs("saves", exist_ok=True)
     return os.listdir("saves")

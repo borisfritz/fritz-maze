@@ -112,7 +112,7 @@ class Game:
                 self.difficulty = GameDifficulty.HARD
                 self.game_state = GameState.CREATE_MAZE
             case Action.SAVE_MAZE:
-                self.maze.name = f"{self.difficulty.value}_{len(get_saved_mazes())}"
+                self.maze.name = f"{self.difficulty.value}_{len(get_saved_mazes()) + 1}"
                 save_maze(self.maze)
                 self.window.text = "Maze Saved!"
             case Action.LOAD_MAZE:
@@ -203,16 +203,16 @@ def main():
 if __name__ == "__main__":
     main()
 
-# main.py - 187 204
+# main.py - 204
 # constants.py - 88
-# maze.py - 96
-# grid.py - 71
-# maze_manager.py - 19
-# player.py - 77
-# window.py - 57
+# maze.py - 95
+# grid.py - 62
+# maze_manager.py - 20
+# player.py - 74
+# window.py - 69
 # button.py - 37
 # timer.py - 29
-# menus.py - 57
+# menus.py - 54
 # game_text.py - 18
 #
-# total - 759
+# total - 750

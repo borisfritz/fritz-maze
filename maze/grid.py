@@ -36,15 +36,6 @@ class Grid:
     def get_cell(self, x, y):
         return self.cells.get((x, y))
 
-    def get_adjacent_cells(self, cell):
-        adjacent_cells = []
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        for dx, dy in directions:
-            neighbor = self.get_cell(cell.x + dx, cell.y + dy)
-            if neighbor and not neighbor.visited:
-                adjacent_cells.append(neighbor)
-        return adjacent_cells
-
     def get_unvisited_neighbors(self, cell):
         unvisited_neighbors = []
         directions = [(0, 2), (0, -2), (2, 0), (-2, 0)]
