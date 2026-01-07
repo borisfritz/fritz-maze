@@ -40,7 +40,7 @@ class Window:
             button.rect.y = start_y + (i * (BUTTON_HEIGHT + BUTTON_SPACING))
             button.draw(screen, pos, WHITE)
 
-        self._draw_pagination(screen)
+        self._draw_page_indicators(screen)
 
     def _draw_background(self,screen, outline):
         if outline:
@@ -56,7 +56,7 @@ class Window:
         text_y = self.rect.y + (50 - text_surf.get_height() / 2)
         screen.blit(text_surf, (text_x, text_y))
 
-    def _draw_pagination(self, screen):
+    def _draw_page_indicators(self, screen):
         total_pages = (len(self.buttons) - 1) // self.max_per_page + 1
         if total_pages <= 1:
             return
