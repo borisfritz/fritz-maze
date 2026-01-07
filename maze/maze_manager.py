@@ -1,9 +1,5 @@
 import pickle
 import os
-import re
-
-from constants import *
-from maze.maze import Maze
 
 def save_maze(maze):
     os.makedirs("saves", exist_ok=True)
