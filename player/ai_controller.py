@@ -25,7 +25,6 @@ class AIController:
         return self._calculate_velocity(ai_player, maze, self.target_cell)
 
     def _set_difficulty_settings(self):
-        from constants import GameDifficulty
         match self.difficulty:
             case GameDifficulty.EASY:
                 return 2

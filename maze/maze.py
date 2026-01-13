@@ -1,5 +1,4 @@
 import random
-from unittest import case
 
 from constants import *
 from maze.grid import Grid
@@ -78,7 +77,9 @@ class Maze:
         return GRID_SIZE_EASY
 
     def _initialize_special_cell(self, x, check_x, is_start=True):
-        while True:
+        attempts = 0
+        while attempts < 1000:
+            attempts += 1
             y = random.randint(1, self.grid_size - 1)
             check_cell = self.grid.get_cell(check_x, y)
             if not check_cell.is_wall:
@@ -92,3 +93,4 @@ class Maze:
                     self.end_cell = special_cell
                 self.grid.add_path(special_cell, check_cell)
                 return
+        raise ValueError("Failed to find suitable special cell after 1000 attempts")
